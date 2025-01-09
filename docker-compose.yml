@@ -1,0 +1,14 @@
+services:
+  mongodb:
+    image: mongo:5.0.15
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    container_name: etutor_mongodb
+    ports:
+      - "27018:27017"
+    volumes:
+      - etutor_mongo_data:/data/db
+
+volumes:
+  etutor_mongo_data:

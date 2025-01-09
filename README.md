@@ -1,0 +1,1 @@
+docker-compose -p etutor-mongodb-4rn up -d 
