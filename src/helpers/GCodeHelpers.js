@@ -1,8 +1,20 @@
-const jwt = require("jsonwebtoken");
+exports.generateRandomCode = (length) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let code = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    code += characters[randomIndex];
+  }
+  return code;
+};
 
-// Tạo token chứa ID
-exports.generateApproveToken = (id) => {
-    const secretKey = process.env.SECRET_KEY ; // Mã bí mật JWT
-    const token = jwt.sign({ id }, secretKey, { expiresIn: "1h" }); // Token hết hạn sau 1 giờ
-    return token;
+exports.generateRandomClassName = (length) => {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    code += characters[randomIndex];
+  }
+  return code;
 };
