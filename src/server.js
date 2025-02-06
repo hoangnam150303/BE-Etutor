@@ -6,9 +6,12 @@ dotenv.config();
 const cors = require("cors");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+// Routes
 const userRoute = require("./routes/userRoutes");
 const classRoute = require("./routes/classRoutes");
-// Routes
+const courseRoute = require("./routes/courseRoutes");
+const messageRoute = require("./routes/messageRoutes");
+// Config
 const corsConfig = require("./configs/corsConfig");
 
 const app = express();
@@ -36,6 +39,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/", userRoute);
 app.use("/class", classRoute);
+app.use("/course", courseRoute);
+app.use("/message", messageRoute);
 // Start server
 app.listen(port, () => {
   console.log(`Server is working on port: ${port}`);
