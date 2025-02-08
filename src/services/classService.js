@@ -40,15 +40,19 @@ exports.acceptClassService = async (classId, tutorId) => {
     if (!validClass) {
       throw new Error("Class not found");
     }
-    await Class.updateOne({ // update status class and add tutor id if admin accept class and choose tutor
+    await Class.updateOne({
+      // update status class and add tutor id if admin accept class and choose tutor
       _id: classId,
       tutorId: tutorId,
       isStart: true,
       isFinish: false,
     });
+    const course = await Course.findById(validClass.courseId);
+    course.classes = course.classes + 1 || 1;
     const student = await users.findById(validClass.studentId); // find student by student id and tutor by tutor id
     const tutor = await users.findById(tutorId);
-    await mailHelpers.sendAcceptClass( // send mail to student and tutor to notificate that class has been accepted
+    await mailHelpers.sendAcceptClass(
+      // send mail to student and tutor to notificate that class has been accepted
       student.email,
       tutor.email,
       validClass.name

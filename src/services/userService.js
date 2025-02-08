@@ -2,6 +2,7 @@ const User = require("../models/users");
 const passWordHelpers = require("../helpers/passWordHelpers");
 const mailHelpers = require("../helpers/mailHelpers");
 const jwt = require("jsonwebtoken");
+const users = require("../models/users");
 
 exports.loginLocalService = async (email, password) => {
   try {
@@ -118,6 +119,72 @@ exports.forgotPasswordService = async (otpInput, verifyToken) => {
     user.password = hashPassword;
     await user.save();
     return { message: "Password reset successfully" };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+exports.getAllUserService = async (filter) => {
+  try {
+    let filterOptions = {};
+    switch (filter) {
+      case "isDeleted":
+        filterOptions = { status: false };
+        break;
+      case "isActive":
+        filterOptions = { isDeleted: true };
+        break;
+      case "tutor":
+        filterOptions = { role: { $regex: /^Tutor$/i } };
+        break;
+      case "student":
+        filterOptions = { role: { $regex: /^Student$/i } };
+        break;
+      default:
+        filterOptions = {};
+        break;
+    }
+    const Users = await users
+      .find(filterOptions)
+      .sort({ createdAt: -1 })
+      .select("-password")
+      .where("role")
+      .ne("Admin");
+
+    return { success: true, Users };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+exports.createTutorAccountService = async (
+  email,
+  username,
+  password,
+  phoneNumber,
+  image
+) => {
+  try {
+    const tutor = await users.findOne({
+      email,
+      authProvider: "local",
+      role: "Tutor",
+    });
+    if (tutor) {
+      throw new Error("Tutor already exists");
+    }
+    const hashPassword = await passWordHelpers.hashPassword(password, 10);
+    await users.create({
+      email,
+      username,
+      password: hashPassword,
+      authProvider: "local",
+      status: true,
+      role: "Tutor",
+      phoneNumber,
+      image,
+    });
+    return { success: true };
   } catch (error) {
     throw new Error(error.message);
   }

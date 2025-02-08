@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
     phoneNumber: { type: String },
     role: {
       type: String,
-      enum: ["Admin", "Student", "Tutor"],
     },
     status: {
       type: Boolean,
