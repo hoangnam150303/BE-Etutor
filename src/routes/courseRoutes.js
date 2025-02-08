@@ -2,18 +2,25 @@ const express = require("express");
 const courseRoute = express.Router();
 const auth = require("../middlewares/auth");
 const courseController = require("../controllers/courseController");
-
-courseRoute.post("/createCourse", auth.isAdmin, courseController.createCourse);
+const upload = require("../utils/multer");
+courseRoute.post(
+  "/createCourse",
+  upload.single("image"),
+  auth.isAdmin,
+  courseController.createCourse
+);
 courseRoute.put(
   "/updateCourse/:id",
+  upload.single("image"),
   auth.isAdmin,
   courseController.updateCourse
 );
-courseRoute.delete(
+courseRoute.put(
   "/deleteCourse/:id",
   auth.isAdmin,
-  courseController.deleteCourse
+  courseController.activeOrDeactiveCourse
 );
-courseRoute.get("/getAllCourse", courseController.getAllCourse);
+
 courseRoute.get("/getDetailCourse/:id", courseController.getDetailCourse);
+courseRoute.get("/getAllCourse", courseController.getAllCourse);
 module.exports = courseRoute;

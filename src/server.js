@@ -1,4 +1,3 @@
-const express = require("express");
 const passport = require("passport");
 const dotenv = require("dotenv");
 const connectDb = require("./configs/databaseConfig");
@@ -13,8 +12,9 @@ const courseRoute = require("./routes/courseRoutes");
 const messageRoute = require("./routes/messageRoutes");
 // Config
 const corsConfig = require("./configs/corsConfig");
+const { app, server } = require("./utils/socket");
 
-const app = express();
+
 const port = process.env.PORT || 8080;
 
 // Middleware
@@ -42,7 +42,7 @@ app.use("/class", classRoute);
 app.use("/course", courseRoute);
 app.use("/message", messageRoute);
 // Start server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is working on port: ${port}`);
   connectDb();
 });

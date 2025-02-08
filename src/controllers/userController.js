@@ -111,3 +111,40 @@ exports.getUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getAllUser = async (req, res) => {
+  try {
+    const { filter } = req.query;
+
+    const response = await userService.getAllUserService(filter);
+
+    if (!response.success) {
+      return res.status(400).json({ message: response.message });
+    }
+    return res.status(200).json(response.Users);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.createTutorAccount = async (req, res) => {
+  try {
+    const { email, username, password, phoneNumber } = req.body;
+    const image = req.file ? req.file.path : null;
+    const respone = await userService.createTutorAccountService(
+      email,
+      username,
+      password,
+      phoneNumber,
+      image
+    );
+    if (!respone.success) {
+      {
+        res.status(400).json({ message: respone.message });
+      }
+    }
+    res.status(200).json(respone);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

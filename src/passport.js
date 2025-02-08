@@ -19,7 +19,7 @@ passport.use(
         const { id, name, emails } = profile;
         const { familyName, givenName } = name;
         const email = emails[0].value;
-        const avatar = profile._json.picture || "";
+        const avatar = profile._json.picture || "";        
         // Kiểm tra người dùng có tồn tại không
         let user = await users.findOne({
           authProvider: "google",
@@ -38,7 +38,6 @@ passport.use(
             avatar: avatar,
             role: "Student",
           });
-          await user.save();
         }
         // Cập nhật thời gian đăng nhập
         user.lastLogin = Date.now();

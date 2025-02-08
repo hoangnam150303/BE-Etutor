@@ -8,12 +8,12 @@ const schema = new mongoose.Schema(
     description: {
       type: String,
     },
-    tutors: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
-    classes: {type: Number},
-    students: {type: Number}, 
+    tutors: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    classes: { type: Number },
     image: {
       type: String,
     },
+    isDeleted: { type: Boolean, default: false },
   },
   {
     timestamps: true,
