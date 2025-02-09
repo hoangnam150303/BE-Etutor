@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
     if (userId) {
       delete userSocketMap[userId]; // Remove the user from the map on disconnect
     }
-    io.emit("user-connected", Object.keys(userSocketMap)); // Emit updated list
+    io.emit("user-disconnected", Object.keys(userSocketMap)); // Emit updated list
   });
 });
 
