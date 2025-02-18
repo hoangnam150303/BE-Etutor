@@ -148,3 +148,18 @@ exports.createTutorAccount = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.activeOrDeactiveUser = async (req, res) => {
+  try {
+    const  userId  = req.params.id;
+    const { status } = req.body;
+    const response = await userService.activeOrDeactiveUserService(userId, status);
+    if (!response.success) {
+      return res.status(400).json({ message: response.message });
+    }
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+

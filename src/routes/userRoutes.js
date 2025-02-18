@@ -15,9 +15,14 @@ userRoute.post(
 userRoute.post("/approveAccount", userController.approveAccount);
 userRoute.post(
   "/createTutor",
-  upload.single("image"),
+  upload.single("avatar"),
   auth.isAdmin,
   userController.createTutorAccount
+);
+userRoute.put(
+  "/updateStatusUser/:id",
+  auth.isAdmin,
+  userController.activeOrDeactiveUser
 );
 userRoute.get("/getUser", auth.isAuth, userController.getUser);
 userRoute.get("/getAllUser", auth.isAuth, userController.getAllUser);

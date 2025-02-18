@@ -70,15 +70,19 @@ exports.activeOrDeactiveCourseService = async (id) => {
 
 exports.getDetailCourseService = async (id) => {
   try {
-    const course = await Course.findById(id);
+    const course = await Course.findById(id).populate("tutors", "username");
+    
     if (!course) {
       throw new Error("Course not found");
     }
     return course;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    
+  }
 };
 
-exports.getAllCourseService = async (filter) => {
+exports.getAllCourseService = async (filter, search) => {
   try {
     let filterOptions = {};
     switch (filter) {
@@ -96,7 +100,10 @@ exports.getAllCourseService = async (filter) => {
     }
 
     // Lấy danh sách khóa học theo filter
-    const courses = await Course.find(filterOptions).sort({ createdAt: -1 });
+    const courses = await Course.find({
+      ...filterOptions,
+      ...(search && { name: { $regex: search, $options: "i" } }),
+    }).sort({ createdAt: -1 });
 
     // Lặp qua từng khóa học để lấy danh sách tutors tương ứng
     const coursesWithTutors = await Promise.all(

@@ -189,3 +189,22 @@ exports.createTutorAccountService = async (
     throw new Error(error.message);
   }
 };
+
+exports.activeOrDeactiveUserService = async (userId, status) => {
+  try {
+    const validUser = await users.findById(userId);
+    if (!validUser) {
+      throw new Error("User not found");
+    }
+    validUser.status = status;
+    await validUser.save();
+    await mailHelpers.sendStatusAccount(
+      validUser.email,
+      validUser.username,
+      validUser.status
+    );
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -294,7 +294,7 @@ const sendUpdateClass = async (
 };
 
 const sendFinishClass = async (emailStudent, emailTutor, className) => {
-  const transporter = nodemailer.createTransport({
+  const transporter = createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
@@ -367,8 +367,91 @@ const sendFinishClass = async (emailStudent, emailTutor, className) => {
     subject,
     html: html("Tutor", "tutor"),
   });
+};
 
-  console.log("Class completion emails sent successfully.");
+const sendStatusAccount = async (email, name, status) => {
+  try {
+    const transport = createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.Gmail,
+        pass: process.env.Password,
+      },
+    });
+
+    // Xác định nội dung dựa trên trạng thái
+    const statusMessage =
+      status === false
+        ? "Your account has been blocked due to policy violations or security concerns. Please contact support for more details."
+        : "Your account has been unblocked. You can now access our services normally.";
+
+    const subject =
+      status === false
+        ? "Account Blocked Notification"
+        : "Account Unblocked Notification";
+
+    const html = `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${subject}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f9;
+                    margin: 0;
+                    padding: 0;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 20px auto;
+                    background: #fff;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    text-align: center;
+                }
+                h1 {
+                    color: #d9534f;
+                }
+                p {
+                    line-height: 1.5;
+                    color: #333;
+                }
+                .status {
+                    font-weight: bold;
+                    color: ${status === "blocked" ? "#d9534f" : "#5cb85c"};
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Hello, ${name}!</h1>
+                <p>Your account status has changed:</p>
+                <p class="status">${
+                  status === "blocked" ? "Blocked ❌" : "Unblocked ✅"
+                }</p>
+                <p>${statusMessage}</p>
+                <p>If you have any questions, feel free to contact our support team.</p>
+                <p style="font-style: italic;">Best regards,</p>
+                <h3>Etutor CO.,LTD</h3>
+            </div>
+        </body>
+        </html>`;
+
+    // Gửi email
+    await transport.sendMail({
+      from: process.env.Gmail,
+      to: email,
+      subject: subject,
+      html: html,
+    });
+  } catch (error) {
+    console.error("❌ Error sending status email:", error);
+  }
 };
 
 module.exports = {
@@ -377,4 +460,5 @@ module.exports = {
   sendAcceptClass,
   sendUpdateClass,
   sendFinishClass,
+  sendStatusAccount,
 };
