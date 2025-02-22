@@ -10,6 +10,7 @@ const ClassSchema = new mongoose.Schema(
     studentId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     documents: [
       {
+        name: { type: String }, 
         url: { type: String },
         createDate: { type: Date },
         senderId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
@@ -17,13 +18,17 @@ const ClassSchema = new mongoose.Schema(
     ],
     videos: [
       {
+        name: { type: String }, 
         url: { type: String },
         createDate: { type: Date },
         senderId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
       },
     ],
+    isAccepted: { type: Boolean, default: false },
     isStart: { type: Boolean, default: false },
     isFinish: { type: Boolean, default: false },
+    startDate: { type: Date },
+    finishdate: { type: Date },
   },
   {
     timestamps: true,

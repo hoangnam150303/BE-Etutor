@@ -8,7 +8,7 @@ const schema = new mongoose.Schema(
     description: {
       type: String,
     },
-    tutors: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    tutors: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
     classes: { type: Number },
     image: {
       type: String,

@@ -32,7 +32,7 @@ exports.isAdmin = async (req, res, next) => {
   }
 };
 
-// Check role, only shop, seller can use function belong in shop
+// Check role, only tutor, tutor can use function belong in tutor
 exports.isTutor = async (req, res, next) => {
   try {
     const token = req.headers.token?.split(" ")[1]; // Trích xuất token từ headers

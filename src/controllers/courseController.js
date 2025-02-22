@@ -67,8 +67,8 @@ exports.getDetailCourse = async (req, res) => {
 
 exports.getAllCourse = async (req, res) => {
   try {
-    const { filter } = req.query;
-    const response = await courseService.getAllCourseService(filter);
+    const { filter,search } = req.query;
+    const response = await courseService.getAllCourseService(filter,search);
     if (!response.success) {
       return res.status(400).json({ message: courses.message });
     }

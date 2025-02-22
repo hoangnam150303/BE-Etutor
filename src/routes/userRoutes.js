@@ -15,10 +15,22 @@ userRoute.post(
 userRoute.post("/approveAccount", userController.approveAccount);
 userRoute.post(
   "/createTutor",
-  upload.single("image"),
+  upload.single("avatar"),
   auth.isAdmin,
   userController.createTutorAccount
 );
+userRoute.put(
+  "/updateStatusUser/:id",
+  auth.isAdmin,
+  userController.activeOrDeactiveUser
+);
+userRoute.put(
+  "/updateProfile",
+  upload.single("avatar"),
+  auth.isAuth,
+  userController.updateUser
+);
 userRoute.get("/getUser", auth.isAuth, userController.getUser);
 userRoute.get("/getAllUser", auth.isAuth, userController.getAllUser);
+userRoute.get("/getUserById/:id", auth.isAuth, userController.getUserById);
 module.exports = userRoute;
