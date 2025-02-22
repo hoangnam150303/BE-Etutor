@@ -251,10 +251,13 @@ exports.getClassByIdService = async (classId) => {
 
 exports.getAllClassByTutorService = async (tutorId) => {
   try {
+    console.log(tutorId);
+
     const validClass = await Class.find({ tutorId: tutorId })
       .populate("studentId", "username")
       .populate("tutorId", "username")
       .populate("courseId", "name");
+
     if (!validClass) {
       throw new Error("Class not found");
     } else {

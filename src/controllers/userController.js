@@ -151,9 +151,12 @@ exports.createTutorAccount = async (req, res) => {
 
 exports.activeOrDeactiveUser = async (req, res) => {
   try {
-    const  userId  = req.params.id;
+    const userId = req.params.id;
     const { status } = req.body;
-    const response = await userService.activeOrDeactiveUserService(userId, status);
+    const response = await userService.activeOrDeactiveUserService(
+      userId,
+      status
+    );
     if (!response.success) {
       return res.status(400).json({ message: response.message });
     }
@@ -161,5 +164,67 @@ exports.activeOrDeactiveUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
+exports.getUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const response = await userService.getUserByIdService(userId);
+    if (!response.success) {
+      return res.status(400).json({ message: response.message });
+    }
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const {
+      email,
+      username,
+      phoneNumber,
+      oldPassword,
+      newPassword,
+      confirmNewPassword,
+    } = req.body;
+
+
+    const avatar = req.file?.path;
+
+    if (!userId) {
+      return res.status(400).json("User not found");
+    }
+    let response;
+    if (!oldPassword || !newPassword || !confirmNewPassword) {
+      response = await userService.updateUserService(
+        userId,
+        email,
+        username,
+        phoneNumber,
+        avatar
+      );
+    } else {
+      if (newPassword !== confirmNewPassword) {
+        return res.status(400).json("Password is not match");
+      }
+      response = await userService.updateUserService(
+        userId,
+        email,
+        username,
+        phoneNumber,
+        avatar,
+        oldPassword,
+        newPassword
+      );
+    }
+    if (!response.success) {
+      return res.status(400).json("Update failed");
+    }
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json("Internal Server");
+  }
+};

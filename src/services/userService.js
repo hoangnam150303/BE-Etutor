@@ -1,4 +1,3 @@
-const User = require("../models/users");
 const passWordHelpers = require("../helpers/passWordHelpers");
 const mailHelpers = require("../helpers/mailHelpers");
 const jwt = require("jsonwebtoken");
@@ -10,7 +9,7 @@ exports.loginLocalService = async (email, password) => {
       throw new Error("All fields are required");
     }
 
-    const user = await User.findOne({ email, authProvider: "local" });
+    const user = await users.findOne({ email, authProvider: "local" });
 
     if (!user) {
       throw new Error("User not found");
@@ -40,7 +39,7 @@ exports.loginLocalService = async (email, password) => {
 
 exports.registerUserService = async (username, email, password) => {
   try {
-    const user = await User.findOne({ email, authProvider: "local" });
+    const user = await users.findOne({ email, authProvider: "local" });
     if (user) {
       throw new Error("User already exists");
     }
@@ -71,7 +70,7 @@ exports.approveAccountService = async (otpInput, verifyToken) => {
       throw new Error("Invalid OTP");
     }
     const hashPassword = await passWordHelpers.hashPassword(password, 10);
-    await User.create({
+    await users.create({
       email,
       username,
       password: hashPassword,
@@ -87,7 +86,7 @@ exports.approveAccountService = async (otpInput, verifyToken) => {
 
 exports.sendOTPForgotPasswordService = async (email, newPassword) => {
   try {
-    const user = await User.findOne({ email, authProvider: "local" });
+    const user = await users.findOne({ email, authProvider: "local" });
     if (!user) {
       throw new Error("User not found");
     }
@@ -111,7 +110,7 @@ exports.sendOTPForgotPasswordService = async (email, newPassword) => {
 
 exports.forgotPasswordService = async (otpInput, verifyToken) => {
   try {
-    const user = await User.findOne({ email, authProvider: "local" });
+    const user = await users.findOne({ email, authProvider: "local" });
     if (!user) {
       throw new Error("User not found");
     }
@@ -204,6 +203,65 @@ exports.activeOrDeactiveUserService = async (userId, status) => {
       validUser.status
     );
     return { success: true };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getUserByIdService = async (userId) => {
+  try {
+    const validUser = await users.findById(userId);
+    if (!validUser) {
+      throw new Error("User not found");
+    }
+    return { success: true, user: validUser };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.updateUserService = async (
+  userId,
+  email,
+  username,
+  phoneNumber,
+  avatar,
+  oldPassword,
+  newPassword
+) => {
+  try {
+    const user = await users.findById({ _id: userId, authProvider: "local" });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (avatar) {
+      user.avatar = avatar;
+    } else if (!oldPassword || !newPassword) {
+      user.email = email;
+      user.username = username;
+      user.phoneNumber = phoneNumber;
+    } else {
+      const isMatch = await passWordHelpers.comparePassword(
+        oldPassword,
+        user.password
+      );
+
+      if (!isMatch) {
+        throw new Error("Password not match");
+      }
+      const hashPassword = await passWordHelpers.hashPassword(newPassword, 10);
+      user.email = email;
+      user.username = username;
+      user.phoneNumber = phoneNumber;
+      user.password = hashPassword;
+    }
+
+    if (user) {
+      user.save();
+      return { success: true };
+    }
+    return { success: false };
   } catch (error) {
     console.log(error);
   }
