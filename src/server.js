@@ -11,6 +11,7 @@ const classRoute = require("./routes/classRoutes");
 const courseRoute = require("./routes/courseRoutes");
 const messageRoute = require("./routes/messageRoutes");
 const callRoute = require("./routes/callRoutes");
+const blogRoute = require("./routes/blogRoutes");
 // Config
 const corsConfig = require("./configs/corsConfig");
 const { app, server } = require("./utils/socket");
@@ -42,6 +43,7 @@ app.use("/class", classRoute);
 app.use("/course", courseRoute);
 app.use("/message", messageRoute);
 app.use("/call", callRoute);
+app.use("/blog", blogRoute);
 // Start server
 server.listen(port, () => {
   console.log(`Server is working on port: ${port}`);
