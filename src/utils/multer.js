@@ -12,7 +12,6 @@ const storage = new CloudinaryStorage({
       "png",
       "webp",
       "mp4",
-      "mkv",
       "docx",
       "PDF",
     ],

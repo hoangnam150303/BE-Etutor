@@ -26,6 +26,20 @@ const BlogSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    like:{
+      type: Number,
+      default: 0
+    },
+    userLikeId:[
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+      }
+    ]
   },
   {
     timestamps: true,
