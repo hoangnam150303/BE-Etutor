@@ -4,6 +4,8 @@ const Course = require("../models/courses");
 const Blog = require("../models/blogs");
 exports.createBlogService = async (title, content, image,file,courseId,classId, userId) => {
     try {
+
+        
         const userValid = await users.findById(userId);
         if (!userValid) {
             throw new Error("User not found");
@@ -75,15 +77,23 @@ exports.activeOrDeactiveBlogService = async (blogId) => {
 
 exports.getAllBlogService = async (filter,search) => {
     try {
+
         let filterOptions = {};
         switch (filter) {
             case "popular":
                 filterOptions = { like: -1 }; // Sắp xếp theo like giảm dần
                 break;
+            case "deleted":
+                filterOptions = { isActive: false }; // Sắp xếp theo like giảm dần
+                break;
+            case "active":
+                filterOptions = { isActive: true }; // Sắp xếp theo like giảm dần
+                break;
             default:
                 filterOptions = { createdAt: -1 }; // Sắp xếp theo thời gian tạo mới nhất
                 break;
         }
+     
         
         const blogs = await Blog.find({ ...(search && { title: { $regex: search, $options: "i" } }) })
         .populate("author", "username")
@@ -123,30 +133,47 @@ exports.getBlogByIdService = async (blogId) => {
 
 exports.getBlogWithUserIdService = async (userId,filter,search) => {
     try {
+
+        
         let filterOptions = {};
         switch (filter) {
             case "popular":
                 filterOptions = { like: -1 }; // Sắp xếp theo like giảm dần
                 break;
-            case "isDeleted":
-                filterOptions = {isActive:false};
-                break;
-            case "active":
-                filterOptions = {isActive:true};
-                break;
             default:
-                filterOptions = {}; // Sắp xếp theo thời gian tạo mới nhất
+                filterOptions = {createdAt:-1}; // Sắp xếp theo thời gian tạo mới nhất
                 break;
         }
-
-       const blog = await Blog.find({ ...(search && { title: { $regex: search, $options: "i" } }) })
+       let blog;
+       if(filter === "deleted"){
+        blog = await Blog.find({ ...(search && { title: { $regex: search, $options: "i" } }) })
         .populate("author", "username")
         .populate("courseId", "name")
         .populate("classId", "name")
         .where("author")
         .equals(userId)
-        .sort({ createdAt: -1 })
-        .sort(filterOptions);
+        .sort(filterOptions)
+        .where("isActive")
+        .equals(false);
+       }else if(filter === "active"){
+        blog = await Blog.find({ ...(search && { title: { $regex: search, $options: "i" } }) })
+        .populate("author", "username")
+        .populate("courseId", "name")       
+        .populate("classId", "name")
+        .where("author")
+        .equals(userId)
+        .sort(filterOptions)
+        .where("isActive")
+        .equals(true);
+       }else{
+        blog = await Blog.find({ ...(search && { title: { $regex: search, $options: "i" } }) })
+        .populate("author", "username")
+        .populate("courseId", "name")       
+        .populate("classId", "name")
+        .where("author")
+        .equals(userId)
+        .sort(filterOptions)
+       }
         if (!blog) {    
             throw new Error("Blog not found");
         }

@@ -9,6 +9,11 @@ classRoute.get(
   auth.isTutor,
   classController.getAllClassByTutor
 );
+classRoute.get(
+  "/getClassByStudent",
+  auth.isAuth,
+  classController.getAllClassByStudent
+);
 classRoute.get("/getClassById/:id", auth.isAuth, classController.getClassById);
 
 classRoute.post(

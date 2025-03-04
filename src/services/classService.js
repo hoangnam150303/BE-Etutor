@@ -213,8 +213,10 @@ exports.getAllClassService = async (filter, search) => {
         filterOptions = {};
         break;
     }
-
-    const classValid = await Class.find({
+   
+    let classValid;
+   if (search && search !== "undefined") {
+    classValid = await Class.find({
       ...filterOptions,
       ...(search && { name: { $regex: search, $options: "i" } }),
     })
@@ -222,9 +224,21 @@ exports.getAllClassService = async (filter, search) => {
       .populate("studentId", "username")
       .populate("tutorId", "username")
       .populate("courseId", "name");
+
+   }else{
+    classValid = await Class.find({
+      ...filterOptions,
+    })
+      .sort({ createdAt: -1 })
+      .populate("studentId", "username")
+      .populate("tutorId", "username")
+      .populate("courseId", "name");
+   }
+      
     if (!classValid) {
       throw new Error("Class not found");
     }
+
     return { success: true, classValid };
   } catch (error) {
     console.log(error);
@@ -258,6 +272,24 @@ exports.getAllClassByTutorService = async (tutorId) => {
       .populate("tutorId", "username")
       .populate("courseId", "name");
 
+    if (!validClass) {
+      throw new Error("Class not found");
+    } else {
+      return { success: true, classValid: validClass };
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+exports.getAllClassByStudentService = async (studentId) => {
+  try {
+    const validClass = await Class.find({ studentId: studentId })
+      .populate("studentId", "username")
+      .populate("tutorId", "username")
+      .populate("courseId", "name");
+
+    
     if (!validClass) {
       throw new Error("Class not found");
     } else {
