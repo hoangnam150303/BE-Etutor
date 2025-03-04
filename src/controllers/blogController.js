@@ -1,11 +1,11 @@
 const blogService = require("../services/blogService");
 exports.createBlog = async (req, res) => {
     try {
-        const { title, content, courseId, classId } = req.body;
+        const { title, content, courseName, className } = req.body;
         const userId = req.user._id;
         const image = req.files?.image?.map((file) => file.path).join(", ");
         const file = req.files?.file?.map((file) => file.path).join(", ");
-        const response = await blogService.createBlogService(title, content, image, file, courseId, classId, userId);
+        const response = await blogService.createBlogService(title, content, image, file, courseName, className, userId);
         if (!response.success) {
             return res.status(400).json({ message: response.message });
         }
@@ -48,6 +48,8 @@ exports.activeOrDeactiveBlog = async (req, res) => {
 exports.getAllBlog = async (req, res) => {
     try{
         const {filter,search} = req.query;
+
+        
         const response = await blogService.getAllBlogService(filter,search);
    
         
@@ -80,6 +82,7 @@ exports.getBlogWithUserId = async (req, res) => {
     try {
         const userId = req.user._id;
         const { filter, search } = req.query;
+        
         if (!userId) {
             return res.status(400).json({ message: "Id is require" });
         }
@@ -105,4 +108,4 @@ exports.likeBlog = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
-        }
+};

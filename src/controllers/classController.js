@@ -93,7 +93,7 @@ exports.getAllClass = async (req, res) => {
     if (!response.success) {
       return res.status(400).json({ message: response.message });
     }
-    return res.status(200).json(response.classValid);
+    return res.status(200).json(response);
   } catch (error) {}
 };
 
@@ -115,6 +115,19 @@ exports.getAllClassByTutor = async (req, res) => {
   try {
     const tutorId = req.user._id;
     const response = await classService.getAllClassByTutorService(tutorId);
+    if (!response.success) {
+      return res.status(400).json({ message: response.message });
+    }
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getAllClassByStudent = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+    const response = await classService.getAllClassByStudentService(studentId);
     if (!response.success) {
       return res.status(400).json({ message: response.message });
     }
