@@ -114,9 +114,9 @@ exports.getUser = async (req, res) => {
 
 exports.getAllUser = async (req, res) => {
   try {
-    const { filter } = req.query;
+    const { filter,search } = req.query;
 
-    const response = await userService.getAllUserService(filter);
+    const response = await userService.getAllUserService(filter,search);
 
     if (!response.success) {
       return res.status(400).json({ message: response.message });

@@ -123,9 +123,11 @@ exports.forgotPasswordService = async (otpInput, verifyToken) => {
   }
 };
 
-exports.getAllUserService = async (filter) => {
+exports.getAllUserService = async (filter,search) => {
   try {
     let filterOptions = {};
+   
+    
     switch (filter) {
       case "isDeleted":
         filterOptions = { status: false };
@@ -144,7 +146,7 @@ exports.getAllUserService = async (filter) => {
         break;
     }
     const Users = await users
-      .find(filterOptions)
+      .find({username: { $regex: search, $options: "i" },...filterOptions })
       .sort({ createdAt: -1 })
       .select("-password")
       .where("role")

@@ -42,7 +42,7 @@ exports.acceptClassService = async (classId, tutorId) => {
     if (!validClass) {
       throw new Error("Class not found");
     }
-    await Class.findByIdAndUpdate(
+  await Class.findByIdAndUpdate(
       { _id: classId },
       {
         isAccepted: true,
@@ -52,6 +52,8 @@ exports.acceptClassService = async (classId, tutorId) => {
         startDate: Date.now(),
       }
     );
+
+    
     const course = await Course.findById(validClass.courseId);
     course.classes = course.classes + 1 || 1;
     const student = await users.findById(validClass.studentId); // find student by student id and tutor by tutor id
@@ -96,7 +98,6 @@ exports.updateClassService = async (classId, tutorId) => {
         message
       );
     }
-    console.log(1111);
 
     return { success: true };
   } catch (error) {
@@ -234,6 +235,7 @@ exports.getAllClassService = async (filter, search) => {
       .populate("tutorId", "username")
       .populate("courseId", "name");
    }
+
       
     if (!classValid) {
       throw new Error("Class not found");
@@ -247,6 +249,8 @@ exports.getAllClassService = async (filter, search) => {
 
 exports.getClassByIdService = async (classId) => {
   try {
+    console.log(classId);
+    
     const validClass = await Class.findById(classId)
       .populate("studentId", "username")
       .populate("tutorId", "username")
@@ -265,13 +269,12 @@ exports.getClassByIdService = async (classId) => {
 
 exports.getAllClassByTutorService = async (tutorId) => {
   try {
-    console.log(tutorId);
 
     const validClass = await Class.find({ tutorId: tutorId })
       .populate("studentId", "username")
       .populate("tutorId", "username")
       .populate("courseId", "name");
-
+    
     if (!validClass) {
       throw new Error("Class not found");
     } else {

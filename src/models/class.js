@@ -19,7 +19,7 @@ const ClassSchema = new mongoose.Schema(
     videos: [
       {
         name: { type: String }, 
-        url: { type: String },
+        url: { type: String },  
         createDate: { type: Date },
         senderId: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
       },

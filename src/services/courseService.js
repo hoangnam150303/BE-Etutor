@@ -82,7 +82,7 @@ exports.getDetailCourseService = async (id) => {
   }
 };
 
-exports.getAllCourseService = async (filter, search) => {
+exports.getAllCourseService = async (filter, search, typeUser) => {
   try {
     let filterOptions = {};
     switch (filter) {
@@ -97,6 +97,11 @@ exports.getAllCourseService = async (filter, search) => {
         break;
       default:
         filterOptions = {};
+    }
+
+    // Nếu typeUser là "user", ẩn các khóa học có isDeleted === true
+    if (typeUser === "user") {
+      filterOptions.isDeleted = false;
     }
 
     // Lấy danh sách khóa học theo filter
@@ -131,3 +136,4 @@ exports.getAllCourseService = async (filter, search) => {
     return { success: false, message: "Internal Server Error" };
   }
 };
+
