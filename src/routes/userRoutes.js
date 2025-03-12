@@ -31,6 +31,6 @@ userRoute.put(
   userController.updateUser
 );
 userRoute.get("/getUser", auth.isAuth, userController.getUser);
-userRoute.get("/getAllUser", auth.isAuth, userController.getAllUser);
+userRoute.get("/getAllUser", userController.getAllUser);
 userRoute.get("/getUserById/:id", auth.isAuth, userController.getUserById);
 module.exports = userRoute;
