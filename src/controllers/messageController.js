@@ -29,6 +29,8 @@ exports.sendMessage = async (req, res) => {
     const userId = req.user._id;
     const message = req.body.message;
     const receiverId = req.params.receiverId;
+    
+    
     const response = await messageService.sendMessageService(
       userId,
       receiverId,
