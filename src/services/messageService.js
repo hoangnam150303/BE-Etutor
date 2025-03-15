@@ -78,13 +78,15 @@ exports.getMessageService = async (userId, receiverId) => {
         { senderId: userId, receiverId: receiverId },
         { senderId: receiverId, receiverId: userId },
       ],
+      message: { $ne: " " }, // Loại bỏ tin nhắn rỗng
     });
-    if (!messages) {
-      throw new Error("Messages not found");
-    }
+
     return { success: true, messages };
-  } catch (error) {}
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
 };
+
 
 exports.sendMessageService = async (userId, receiverId, message) => {
   try {
@@ -96,14 +98,20 @@ exports.sendMessageService = async (userId, receiverId, message) => {
     if (!receiverUser) {
       throw new Error("Receiver user not found");
     }
+   
+    
     if (!message) {
+      console.log(1111111);
       return;
     }
+    
     const newMessage = await Message.create({
       senderId: userId,
       receiverId: receiverUser._id,
       message,
     });
+    console.log(111111);
+    
     const receiverSocketId = getReceiverSocketId(receiverId);
 
     if (receiverSocketId) {

@@ -118,9 +118,12 @@ exports.getAllCourseService = async (filter, search, typeUser) => {
         if (Array.isArray(course.tutors) && course.tutors.length > 0) {
           const validTutors = await users
             .find({ _id: { $in: course.tutors }, role: "Tutor" })
-            .select("username"); // Chỉ lấy username
+            .select("_id username"); // Thêm _id vào select
 
-          tutors = validTutors.map((tutor) => tutor.username);
+          tutors = validTutors.map((tutor) => ({
+            _id: tutor._id,
+            username: tutor.username,
+          }));
         }
 
         return {
