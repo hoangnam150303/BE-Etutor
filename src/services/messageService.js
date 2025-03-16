@@ -101,7 +101,6 @@ exports.sendMessageService = async (userId, receiverId, message) => {
    
     
     if (!message) {
-      console.log(1111111);
       return;
     }
     
@@ -110,7 +109,6 @@ exports.sendMessageService = async (userId, receiverId, message) => {
       receiverId: receiverUser._id,
       message,
     });
-    console.log(111111);
     
     const receiverSocketId = getReceiverSocketId(receiverId);
 

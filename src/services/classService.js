@@ -249,8 +249,6 @@ exports.getAllClassService = async (filter, search) => {
 
 exports.getClassByIdService = async (classId) => {
   try {
-    console.log(classId);
-    
     const validClass = await Class.findById(classId)
       .populate("studentId", "username")
       .populate("tutorId", "username")

@@ -47,7 +47,7 @@ exports.isTutor = async (req, res, next) => {
     req.user = await User.findOne({_id:decode.id, role:"Tutor"}); // Tìm user dựa trên decode từ token
     if (!req.user) {
       return res.status(404).json({
-        message: "Shop not found",
+        message: "Tutor not found",
         status: "ERROR",
       });
     }
