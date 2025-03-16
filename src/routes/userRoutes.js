@@ -33,4 +33,8 @@ userRoute.put(
 userRoute.get("/getUser", auth.isAuth, userController.getUser);
 userRoute.get("/getAllUser", userController.getAllUser);
 userRoute.get("/getUserById/:id", auth.isAuth, userController.getUserById);
+userRoute.post("/forgotPassword", userController.forgotPassword);
+userRoute.put("/resetPassword", userController.updatePassword);
+userRoute.get("/getAllStudent",auth.isTutor,userController.getAllStudentByTutor);
+userRoute.get("/getAllTutor",auth.isAuth,userController.getAllTutorByStudent);
 module.exports = userRoute;

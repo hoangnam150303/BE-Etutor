@@ -1,7 +1,7 @@
-const passWordHelpers = require("../helpers/passWordHelpers");
+
 const jwt = require("jsonwebtoken");
 const users = require("../models/users");
-const sendApproveAccount = require("../helpers/mailHelpers");
+const mailHelpers = require("../helpers/mailHelpers");
 const userService = require("../services/userService");
 // login user with google
 exports.loginGoogle = async (req, res) => {
@@ -71,18 +71,41 @@ exports.loginLocal = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await users.findOne({ email });
+    const user = await users.findOne({ email: email, authProvider: "local" });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-    const accessToken = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN, {
-      expiresIn: process.env.TOKEN_EXPIRED,
+
+    const otp = Math.floor(Math.random() * 10000 + 1000);
+
+    await mailHelpers.sendForgotPassword(email, user.username, otp);
+    const passwordToken = jwt.sign({ id: user._id, otp:otp }, process.env.FORGOT_PASSWORD_TOKEN, {
+      expiresIn: process.env.PASSWORD_TOKEN_EXPIRED,
     });
-    res.status(200).json({ accessToken });
+    res.status(200).json({ passwordToken });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.updatePassword = async (req,res)=>{
+  try {
+    const { newPassword, confirmPassword,OTP, passWordToken } = req.body;
+    if (!newPassword || !confirmPassword || !OTP || !passWordToken) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+    const response = await userService.updatePasswordService(newPassword,OTP,passWordToken);
+    if (!response.success) {
+      return res.status(400).json({ message: response.message });
+    }
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
 
 exports.approveAccount = async (req, res) => {
   try {
@@ -101,6 +124,8 @@ exports.approveAccount = async (req, res) => {
 exports.getUser = async (req, res) => {
   try {
     const user = await users.findById(req.user._id);
+    
+    
     res.status(200).json({
       id: user._id,
       email: user.email,
@@ -228,3 +253,35 @@ exports.updateUser = async (req, res) => {
     return res.status(500).json("Internal Server");
   }
 };
+
+exports.getAllStudentByTutor = async (req,res)=>{
+  try {
+    const tutorId = req.user._id;
+    if (!tutorId) {
+      return res.status(400).json({message:"User not found"});
+    }
+    const response = await userService.getAllStudentByTutorService(tutorId);
+    if (!response.success) {
+      return res.status(400).json({message:response.message});
+    }
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({message:"Internal Server",error});
+  }
+}
+
+exports.getAllTutorByStudent = async (req,res)=>{
+  try {
+    const studentId = req.user._id;
+    if (!studentId) {
+      return res.status(400).json({message:"User not found"});
+    }
+    const response = await userService.getAllTutorByStudentService(studentId);
+    if (!response.success) {
+      return res.status(400).json({message:response.message});
+    }
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({message:"Internal Server",error});
+  }
+}

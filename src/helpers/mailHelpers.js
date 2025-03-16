@@ -81,68 +81,76 @@ const sendApproveAccount = async (email, name, OTP) => {
 };
 
 const sendForgotPassword = async (email, name, OTP) => {
-  const transport = createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.Gmail,
-      pass: process.env.Password,
-    },
-  });
-  const html = `<!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>Your verify code</title>
-          <style>
-              body{
-                  font-family: Arial, san-serif;
-                  margin: 0;
-                  padding: 0;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  height: 100vh;
-              }
-              .container{
-                  background-color: #eee5da;
-                  padding: 20px;
-                  border-radius: 8px;
-                  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                  text-align: center;
-              }
-               h1{
-                  color: #679089;
+  try {
+   const transport = createTransport({
+     host: "smtp.gmail.com",
+     port: 465,
+     secure: true,
+     auth: {
+       user: process.env.Gmail,
+       pass: process.env.Password,
+     },
+   });
+ 
+   const subject = "Password Reset Code";
+ 
+   const html = `<!DOCTYPE html>
+       <html lang="en">
+         <head>
+           <meta charset="UTF-8" />
+           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+           <title>Your verify code</title>
+           <style>
+               body{
+                   font-family: Arial, san-serif;
+                   margin: 0;
+                   padding: 0;
+                   display: flex;
+                   justify-content: center;
+                   align-items: center;
+                   height: 100vh;
                }
-               p{
-                  margin-bottom: 20px;
+               .container{
+                   background-color: #eee5da;
+                   padding: 20px;
+                   border-radius: 8px;
+                   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                   text-align: center;
                }
-               .otp{
-                  font-size: 36px;
-                  color: #f18966;
-                  margin-bottom: 30px;
-               }
-          </style>
-        </head>
-        <body>
-         <div class="container">
-          <h1>New Password</h1>
-          <p>Hello ${name} your verify code for reset password is:</p>
-          <p class="Password" style="color: #f18966; font-weigth: bold;">${OTP}</p>
-         </div>
-        </body>
-      </html>
-      `;
-
-  await transport.sendMail({
-    from: process.env.Gmail,
-    to: email,
-    subject: subject,
-    html,
-  });
-};
+                h1{
+                   color: #679089;
+                }
+                p{
+                   margin-bottom: 20px;
+                }
+                .otp{
+                   font-size: 36px;
+                   color: #f18966;
+                   margin-bottom: 30px;
+                }
+           </style>
+         </head>
+         <body>
+          <div class="container">
+           <h1>New Password</h1>
+           <p>Hello ${name}, your verification code for resetting your password is:</p>
+           <p class="otp">${OTP}</p>
+          </div>
+         </body>
+       </html>`;
+ 
+   await transport.sendMail({
+     from: process.env.Gmail,
+     to: email,
+     subject: subject,  // ✅ Bây giờ subject đã có giá trị
+     html,
+   });
+ 
+  } catch (error) {
+   console.log(error);
+  }
+ };
+ 
 
 const sendAcceptClass = async (emailStudent, emailTutor, className) => {
   const transport = createTransport({

@@ -2,7 +2,7 @@ const passWordHelpers = require("../helpers/passWordHelpers");
 const mailHelpers = require("../helpers/mailHelpers");
 const jwt = require("jsonwebtoken");
 const users = require("../models/users");
-
+const Class = require("../models/class");
 exports.loginLocalService = async (email, password) => {
   try {
     if (!email || !password) {
@@ -268,3 +268,69 @@ exports.updateUserService = async (
     console.log(error);
   }
 };
+
+exports.updatePasswordService = async (password, otp,passWordToken) => {
+  try {
+    const decode = jwt.verify(passWordToken, process.env.FORGOT_PASSWORD_TOKEN);
+    if (!decode) {
+      return {success: false};
+    }
+    if (decode.otp.toString() !== otp.toString()) {
+      return {success: false, message: "OTP not match"};
+    }
+    const hashPassword = await passWordHelpers.hashPassword(password, 10);
+    const user = await users.findById(decode.id);
+    if (!user) {
+      return {success: false, message: "User not found"};
+    }
+    user.password = hashPassword;
+    await user.save();
+    return {success: true};
+  } catch (error) {
+    return {success: false, message: error.message};
+  }
+}
+
+exports.getAllStudentByTutorService = async (tutorId) => {
+  try {
+    const validTutor = await users.findById(tutorId).where("role").equals("Tutor");    
+    if (!validTutor) {
+      throw new Error("Tutor not found");
+    }
+    const validClasses = await Class.find({ tutorId: tutorId });
+    if (!validClasses) {
+      
+      throw new Error("Class not found");
+    }
+    const studentIds =  validClasses.map((item) => item.studentId);
+    const validStudents = await users.find({ _id: { $in: studentIds } });    
+    if (!validStudents) {
+      throw new Error("Student not found");
+    }
+    return { success: true, students: validStudents };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+exports.getAllTutorByStudentService = async (studentId) => {
+  try {
+    const validStudent = await users.findById(studentId).where("role").equals("Student");    
+    if (!validStudent) {
+      throw new Error("Student not found");
+    }
+    const validClasses = await Class.find({ studentId: studentId });
+    if (!validClasses) {
+      
+      throw new Error("Class not found");
+    }
+    const tutorIds =  validClasses.map((item) => item.tutorId);
+    const validTutors = await users.find({ _id: { $in: tutorIds } });    
+    if (!validTutors) {
+      throw new Error("Tutor not found");
+    }
+    return { success: true, tutors: validTutors };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
