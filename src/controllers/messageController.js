@@ -28,9 +28,7 @@ exports.sendMessage = async (req, res) => {
   try {
     const userId = req.user._id;
     const message = req.body.message;
-    const receiverId = req.params.receiverId;
-    
-    
+    const receiverId = req.params.receiverId;    
     const response = await messageService.sendMessageService(
       userId,
       receiverId,
@@ -40,5 +38,7 @@ exports.sendMessage = async (req, res) => {
       return res.status(400).json({ message: response.message });
     }
     return res.status(200).json("Message sent successfully");
-  } catch (error) {}
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
