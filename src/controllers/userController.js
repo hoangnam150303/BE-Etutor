@@ -255,7 +255,7 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.getAllStudentByTutor = async (req,res)=>{
-  try {
+  try { 
     const tutorId = req.user._id;
     if (!tutorId) {
       return res.status(400).json({message:"User not found"});
