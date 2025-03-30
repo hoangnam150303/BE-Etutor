@@ -183,7 +183,7 @@ exports.createTutorAccountService = async (
       status: true,
       role: "Tutor",
       phoneNumber,
-      image,
+      avatar: image,
     });
     return { success: true };
   } catch (error) {

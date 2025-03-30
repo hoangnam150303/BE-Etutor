@@ -79,7 +79,8 @@ exports.getMessageService = async (userId, receiverId) => {
         { senderId: receiverId, receiverId: userId },
       ],
       message: { $ne: " " }, // Loại bỏ tin nhắn rỗng
-    });
+    }) .populate("senderId", "username avatar") // Lấy name và avatar của sender
+    .populate("receiverId", "username avatar");;
 
     return { success: true, messages };
   } catch (error) {
@@ -98,10 +99,9 @@ exports.sendMessageService = async (userId, receiverId, message) => {
     if (!receiverUser) {
       throw new Error("Receiver user not found");
     }
-   
-    
+       
     if (!message) {
-      return;
+      return { success: false, message:"fail"};
     }
     
     const newMessage = await Message.create({
