@@ -16,7 +16,7 @@ courseRoute.put(
   courseController.updateCourse
 );
 courseRoute.put(
-  "/deleteCourse/:id",
+  "/activeOrDeactive/:id",
   auth.isAdmin,
   courseController.activeOrDeactiveCourse
 );

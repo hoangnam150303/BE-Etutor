@@ -22,6 +22,8 @@ exports.updateBlog = async (req, res) => {
         const { title, content, courseId, classId } = req.body;
         const image = req.files?.image?.map((file) => file.path).join(", ");
         const file = req.files?.file?.map((file) => file.path).join(", ");
+      
+        
         const response = await blogService.updateBlogService(blogId, title, content, image, file, courseId, classId);
         if (!response.success) {
             return res.status(400).json({ message: response.message });
