@@ -14,6 +14,7 @@ const storage = new CloudinaryStorage({
       "mp4",
       "docx",
       "PDF",
+      "pdf",
     ],
     resource_type: "auto",
   },
