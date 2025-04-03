@@ -131,6 +131,7 @@ exports.getUser = async (req, res) => {
       email: user.email,
       username: user.username,
       role: user.role,
+      avatar: user.avatar,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
