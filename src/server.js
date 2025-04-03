@@ -45,7 +45,9 @@ app.use("/message", messageRoute);
 app.use("/call", callRoute);
 app.use("/blog", blogRoute);
 
-server.listen(port, '0.0.0.0', () => {
+server.listen(port, () => { 
+  console.log(process.env.CORS_ORIGIN);
+  
   console.log(`Server is working on port: ${port}`);
   connectDb();
 });
