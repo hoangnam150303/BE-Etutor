@@ -1,6 +1,6 @@
 const corsConfig = {
   // Configures the Access-Control-Allow-Origin
-  origin: process.env.CORS_ORIGIN,
+  origin: process.env.CORS_ORIGIN || "https://etutor-dvvr.onrender.com",
 
   // Configures the Access-Control-Allow-Methods
   methods: "GET, POST, OPTIONS, PUT, PATCH, DELETE",
