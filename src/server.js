@@ -45,7 +45,7 @@ app.use("/message", messageRoute);
 app.use("/call", callRoute);
 app.use("/blog", blogRoute);
 // Start server
-server.listen(port, () => {
+server.listen(port, '0.0.0.0', () => {
   console.log(`Server is working on port: ${port}`);
   connectDb();
 });
