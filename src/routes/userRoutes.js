@@ -5,6 +5,7 @@ const passport = require("../passport");
 const auth = require("../middlewares/auth");
 const upload = require("../utils/multer");
 
+userRoute.get("/getUser", auth.isAuth, userController.getUser);
 userRoute.post("/register", userController.registerUser);
 userRoute.post("/login", userController.loginLocal);
 userRoute.post(
@@ -30,7 +31,7 @@ userRoute.put(
   auth.isAuth,
   userController.updateUser
 );
-userRoute.get("/getUser", auth.isAuth, userController.getUser);
+
 userRoute.get("/getAllUser", userController.getAllUser);
 userRoute.get("/getUserById/:id", auth.isAuth, userController.getUserById);
 userRoute.post("/forgotPassword", userController.forgotPassword);
