@@ -123,9 +123,7 @@ exports.approveAccount = async (req, res) => {
 };
 exports.getUser = async (req, res) => {
   try {
-    const user = await users.findById(req.user._id);
-    
-    
+    const user = await users.findById(req.user._id);    
     res.status(200).json({
       id: user._id,
       email: user.email,
