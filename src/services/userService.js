@@ -76,7 +76,7 @@ exports.approveAccountService = async (otpInput, verifyToken) => {
       password: hashPassword,
       authProvider: "local",
       status: true,
-      role: "Admin",
+      role: "Student",
     });
     return { message: "Account approved successfully" };
   } catch (error) {
@@ -123,18 +123,10 @@ exports.forgotPasswordService = async (otpInput, verifyToken) => {
   }
 };
 
-exports.getAllUserService = async (filter,search) => {
+exports.getAllUserService = async (filter,search,typeUser) => {
   try {
     let filterOptions = {};
-   
-    
     switch (filter) {
-      case "isDeleted":
-        filterOptions = { status: false };
-        break;
-      case "isActive":
-        filterOptions = { isDeleted: true };
-        break;
       case "tutor":
         filterOptions = { role: { $regex: /^Tutor$/i } };
         break;
@@ -145,13 +137,41 @@ exports.getAllUserService = async (filter,search) => {
         filterOptions = {};
         break;
     }
-    const Users = await users
-      .find({username: { $regex: search, $options: "i" },...filterOptions })
+    let Users;
+  if (typeUser === "Admin"){ 
+    if (filter === "isActive") {
+      Users = await users
+      .find({username: { $regex: search, $options: "i" }, status:true})
       .sort({ createdAt: -1 })
       .select("-password")
       .where("role")
       .ne("Admin");
-
+    }
+   if (filter === "isDeleted") {
+    Users  = await users
+    .find({username: { $regex: search, $options: "i" },status:false})
+    .sort({ createdAt: -1 })
+    .select("-password")
+    .where("role")
+    .ne("Admin");
+   }
+   else{
+    Users  = await users
+    .find({username: { $regex: search, $options: "i" },...filterOptions})
+    .sort({ createdAt: -1 })
+    .select("-password")
+    .where("role")
+    .ne("Admin");
+   }
+  }
+   else{
+    Users  = await users
+    .find({username: { $regex: search, $options: "i" },...filterOptions, status:true})
+    .sort({ createdAt: -1 })
+    .select("-password")
+    .where("role")
+    .ne("Admin");
+   }
     return { success: true, Users };
   } catch (error) {
     throw new Error(error.message);
