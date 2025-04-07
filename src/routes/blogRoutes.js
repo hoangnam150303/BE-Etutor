@@ -13,7 +13,7 @@ blogRoute.put("/updateBlog/:id", upload.fields([
     { name: "file" }
 ]),auth.isAuth, blogController.updateBlog);
 blogRoute.get("/getBlogById/:id",auth.isAuth,blogController.getBlogById);
-blogRoute.get("/getAllBlog",auth.isAuth,blogController.getAllBlog);
+blogRoute.get("/getAllBlog",blogController.getAllBlog);
 blogRoute.get("/getBlogByUser",auth.isAuth,blogController.getBlogWithUserId);
 blogRoute.put("/activeOrDeactive/:id", auth.isAuth, blogController.activeOrDeactiveBlog)
 blogRoute.put("/likeBlog/:id", auth.isAuth, blogController.likeBlog);
