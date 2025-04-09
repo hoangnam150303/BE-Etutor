@@ -285,7 +285,7 @@ exports.getAllClassByTutorService = async (tutorId) => {
 
 exports.getAllClassByStudentService = async (studentId) => {
   try {
-    const validClass = await Class.find({ studentId: studentId })
+    const validClass = await Class.find({ studentId: studentId,isAccepted:true })
       .populate("studentId", "username")
       .populate("tutorId", "username")
       .populate("courseId", "name");
